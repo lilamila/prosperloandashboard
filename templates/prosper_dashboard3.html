@@ -1,0 +1,449 @@
+<!-- http://bl.ocks.org/mbostock/4060606 -->
+<!-- view-source:https://bost.ocks.org/mike/loans/ -->
+<!-- TODO: REFACTOR 'cat' TO CATEGORY? -->
+<!DOCTYPE html>
+<html lang="en">
+<!-- Head -->
+<head>
+  <title>Leaf's Visualizations</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Marie's place to visualize data.">
+  <meta name="author" content="Marie Leaf">
+
+  <!-- Scripts -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+  <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+  <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" type="text/css" href="../static/css/styles.css" />
+
+
+  <!-- Web Fonts -->
+  <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,500,700' rel='stylesheet' type='text/css'>
+
+  <!--   <script src="//d3js.org/d3.v3.min.js"></script> -->
+  <!-- http://stackoverflow.com/questions/21381097/d3-is-not-defined-referenceerror -->
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script> 
+  <script src="https://d3js.org/d3-color.v0.5.min.js"></script>
+<script src="https://d3js.org/d3-interpolate.v0.9.min.js"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v0.3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/1.10.0/d3-legend.min.js"></script>
+
+  <!-- Style -->
+  <style>
+
+  .chart rect {
+    fill: #56C9CC;
+  }
+
+  .chart text {
+    fill: white;
+    font: 15px sans-serif;
+    text-anchor: end;
+  }
+
+  .chart {
+    margin-left: -40px;
+    height: 506px;
+    background-color: #7fe6e7;
+    color: white;
+  }
+
+  text {
+    font: 8px sans-serif;
+  }
+
+  .dot {
+    /*stroke: #000;*/
+  }
+
+  .axis path, .axis line {
+    fill: none;
+    stroke: white;
+    shape-rendering: crispEdges;
+  }
+  .axis text {
+  fill: white;
+  font-family: sans-serif;
+  font-size: 11px;
+  }
+
+  .label {
+    fill: #777;
+  }
+
+  .cat.label {
+    font: 500 196px "Helvetica Neue";
+    fill: #ddd;
+  }
+
+  .cat.label.active {
+    fill: #aaa;
+  }
+
+  .overlay {
+    fill: none;
+    pointer-events: all;
+    cursor: ew-resize;
+  }
+
+  .legend rect {
+    fill:#48D9C5;
+    stroke:white;
+    /*opacity:0.8;*/
+  }
+
+  #buttons-container {
+    float: left;
+    margin-left: 25px;
+  }
+
+  #scatter-container {
+    width: 62%;
+    float: center;
+    margin-left: 50px;
+    margin-right: 25px;
+ }
+
+  div.years_buttons div{
+      background-color: rgb(250,88,88);
+      padding: 3px;
+      margin: 7px;
+  }
+  .color-primary-0 { color: #48D9C5 } /* Main Primary color */
+  .color-primary-1 { color: #A4F3E8 }
+  .color-primary-2 { color: #6FE7D6 }
+  .color-primary-3 { color: #26C9B3 }
+  .color-primary-4 { color: #02B69D }
+
+  .color-secondary-1-0 { color: #FFC254 } /* Main Secondary color (1) */
+  .color-secondary-1-1 { color: #FFE1AC }
+  .color-secondary-1-2 { color: #FFD07B }
+  .color-secondary-1-3 { color: #FFB530 }
+  .color-secondary-1-4 { color: #FFA503 }
+
+  .color-secondary-2-0 { color: #FC5363 } /* Main Secondary color (2) */
+  .color-secondary-2-1 { color: #FEABB3 }
+  .color-secondary-2-2 { color: #FD7A87 }
+  .color-secondary-2-3 { color: #FA2F43 }
+  .color-secondary-2-4 { color: #F8031A }
+
+  </style>
+  <script type="text/javascript">
+
+    function draw(d){
+      // console.table(d.slice[0,10]);
+      // debugger;
+      // Chart dimensions. Create Chart.
+      var margin = {top: 19.5, right: 19.5, bottom: 25.5, left: 42.5},
+          width = 1000 - margin.right - margin.left,
+          height = 500 - margin.top - margin.bottom;
+
+      var chart = d3.select(".chart")
+            .attr("width", width)
+            .attr("height", height);
+
+      // Various accessors that specify data dimensions to visualize.
+      function x(d) { return d.LoanStatus } 
+      function y(d) { return d.MonthlyLoanPayment; } //or d.InterestRate
+      function radius(d) { return d.ProsperPrincipalOutstanding; }
+      function color(d) { return d.ProsperScore; }  
+      function key(d) { return d.ListingKey; }
+      function year_stripped(d) {return d.ListingCreationDate.getUTCFullYear();}
+
+      // function extent(accessorfunc) {
+      //   var extent = d3.extent(data, function(d){ return accessorfunc;
+      //   });
+      //   return extent;
+      // }
+
+      // Data scales. These domains make assumptions of data, naturally.
+      var xScale = d3.scale.ordinal().domain(['Past Due (1-15 days)','Past Due (16-30 days)', 'Past Due (31-60 days)', 'Past Due (61-90 days)', 'Past Due (91-120 days)','FinalPaymentInProgress', ]).rangePoints([10, width-10]);
+        // d3.scale.linear().domain([0, 12]).range([0, width]),
+          // yScale = d3.scale.linear().domain([0, d3.max(data, function(d) {return d.value;})]).range([height, 0]),
+          yScale = d3.scale.linear().domain([0, 900]).nice().range([height, 0]), // .nice() makes axis end in round number
+          // yScale = d3.scale.linear().domain(extent(y(d)).range([height, 0]),
+
+          radiusScale = d3.scale.sqrt().domain([0, 19000]).range([0, 30]),
+          // // colorScale = d3.scale.category20c();
+          // colorScale = d3.scale.linear().domain([0, 11]).range(["#f2f0f7", "#dadaeb", "#bcbddc", "#9e9ac8", "#756bb1", "#54278f"]);
+          colorScale = d3.scale.ordinal().domain([0, 11]).range(["#f2f0f7", "#dadaeb", "#bcbddc", "#9e9ac8", "#756bb1", "#54278f"]);
+          // colorScale = d3.scale.scaleSequential()interpolateRdYlBu(t)
+          // colorScale =d3.scaleSequential(d3.interpolatePiYG);
+
+
+      formatter = d3.format(".0%");
+
+      // The x & y axes.
+      var xAxis = d3.svg.axis().scale(xScale).orient("bottom"), //.ticks(5, d3.format(",d")), .tickValues(['', 'Past Due (1-15 days)','Past Due (16-30 days)', 'Past Due (31-60 days)', 'Past Due (61-90 days)', 'Past Due (91-120 days)','FinalPaymentInProgress' ])
+          yAxis = d3.svg.axis().scale(yScale).orient("left"); //.tickFormat(formatter);
+
+      // Create the SVG container and set the origin.
+      var svg = d3.select(".chart").append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        // Add the x-axis.
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+
+        // Add the y-axis.
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis);
+
+        // Add an x-axis label.
+        svg.append("text")
+            .attr("class", "x label")
+            .attr("text-anchor", "end")
+            .attr("x", width - 60)
+            .attr("y", height- 7)
+            .text("Days Past Due");
+
+        // Add a y-axis label.
+        svg.append("text")
+            .attr("class", "y label")
+            .attr("text-anchor", "end")
+            .attr("y", 6)
+            .attr("dy", ".75em")
+            .attr("transform", "rotate(-90)")
+            .text("Monthly Loan Payment");
+
+      // return console.log(d);
+
+      // add filter update by year functions
+        var years = [];
+
+        for (var i = 2005; i < 2015; i +=1) {
+            years.push(i); }
+
+      // plot loan points on chart
+        function plot_loans(d) {
+          // if (error) return console.warn(error);
+          // console.table(d.slice[0,10]);
+          // console.log(d.ProsperPrincipalOutstanding);
+          // var year = 2010;
+
+          // Add a circle per loan.
+          var dot = svg.append("g")
+              .attr("class", "dots")
+            .selectAll(".dot")
+              .data(d, key(d))
+            .enter().append("circle")
+              .attr("class", "dot")
+              .style("fill", function(d) { return colorScale(color(d)); })
+              .call(position)
+              .sort(order);
+
+
+          // Positions the dots based on data.
+          function position(dot) {
+            dot .attr("cx", function(d) { return xScale(x(d)); })
+                .attr("cy", function(d) { return yScale(y(d)); })
+                .attr("r", function(d) { return radiusScale(radius(d)); })
+                .attr('stroke-width', 0.7)
+                .attr('opacity', 0.9);
+            }
+
+          // debugger;
+
+                // Defines a sort order so that the smallest dots are drawn on top.
+            function order(a, b) { return radius(b) - radius(a); }
+            
+            // to know which years to loop over in animation, store array, and populate. 
+            var years = [];
+            // increment by steps of 1 (TODO: loop through extent of years)
+            for (var i = 2007; i < 2015; i +=1) {
+              // if(i !== 1942 && i !== 1946) { // take out any non-existent year
+                years.push(i);
+              // }
+            }
+
+            function update(year){
+              var filtered = d.filter(function(d){
+                  return year_stripped(d) == year;
+                  }); // console.table(filtered.slice[0,10]);
+              d3.select('section#one')
+                .select('h2')
+                .text("Prosper Loans " + year);
+
+              // if current year is undefined, set it to 2014
+              // current_year = current_year || 2014;
+
+// var dot = svg.append("g")
+//               .attr("class", "dots")
+//             .selectAll(".dot")
+//               .data(d, key(d))
+//             .enter().append("circle")
+//               .attr("class", "dot")
+//               .style("fill", function(d) { return colorScale(color(d)); })
+//               .call(position)
+//               .sort(order);
+
+              var loans = svg.selectAll('circle.dot')
+                             .data(filtered);           
+                             // .data(filtered, function(d) {return d.ListingKey;});                  
+                             // .data(filtered, key(filtered));
+              loans.exit().remove();
+              // debugger;
+              loans.enter()
+                   .append("circle")
+                   .attr("class", "dot")
+                   // .filter(function(d) { return year_stripped(d) == year; })
+                   .style("fill", function(d) { return colorScale(color(d)); })
+                   // .attr('stroke', 'black')
+                   .attr('stroke-width', 0.7)
+                   .attr('opacity', 0.9)
+                   .transition()
+                   .duration(500)
+                   .call(position)
+                   .sort(order);
+
+              // Add a title.
+              loans.append("title")
+                  .text(function(d) { return "ListingKey: " + d.ListingKey + " "
+                                      + "Principal Outstanding: $" + radius(d); });
+                   } //end of function update(year)
+            
+              // update(2010);
+
+              var year_idx = 0;
+
+              var year_interval = setInterval(function() {
+                  update(years[year_idx]);
+
+                  year_idx++;
+
+                  if(year_idx >= years.length) {
+                      clearInterval(year_interval);
+
+                  // add buttons for interactivity
+                  var buttons = d3.select("p") // or d3.select("div.col-md-push-4")
+                                .append("div")
+                                .attr("class", "years_buttons")
+                                .selectAll("div")
+                                .data(years)
+                                .enter()
+                                .append("div")
+                                .text(function(d) {
+                                    return d;
+                                });
+                  
+                    // use D3/Jquery interactivity with event binding and 
+                      buttons.on("click", function(d){
+                        d3.select(".years_buttons")
+                          .selectAll("div") // individual buttons
+                          .transition()
+                          .duration(200)
+                          .style("color", "black") // initial styles
+                          .style("background", "#FA5858")
+
+                        d3.select(this)
+                        .transition()
+                        .duration(500)
+                        .style("background", "#56C9CC")
+                        .style("color", "white")
+
+                      // update by year, d in this case refers to '.data(years)'' passed in to 'var buttons'
+                      update(d);
+
+                    })
+                    }
+
+                }, 500);
+
+            } //end of function plot_loans 
+
+      plot_loans(d);
+
+
+// ordinal legend
+      svg.append("g")
+        .attr("class", "legendLinear")
+        // .attr("transform", "translate(" + 800 + "," + margin.bottom + ")");
+        .attr("transform", "translate(" + (width-100) + "," + 20 + ")");
+
+      var legend = d3.legend.color().labelFormat(d3.format).labelOffset(-10)
+        //d3 symbol creates a path-string, for example
+        //"M0,-8.059274488676564L9.306048591020996,
+        //8.059274488676564 -9.306048591020996,8.059274488676564Z"
+        .shape("path", d3.svg.symbol().type("circle").size(50)())
+        .shapePadding(5)
+        .scale(colorScale);
+
+      svg.select(".legendLinear")
+        .call(legend);
+
+
+    } //end of draw function
+
+  </script>
+</head>
+
+
+<!-- Body -->
+<body>
+  <section id="banner">
+    <h2>Visualizing Prosper Loans <strong>Lender Dashboard</strong></h2>
+  </section>
+  <section id="one" class="wrapper special">
+    <h2>Prosper Loans</h2>
+    <div class = "container">
+    <div class ="inner">
+    <div class ="row">
+    <div class = "col-md-push-2 col-lg-push-4" id="buttons-container"> 
+    <p>Filter year</p>
+    </div>
+    <div class="col-md-10 col-lg-8" id="scatter-container">
+      <svg class="chart"></svg>
+      <script type="text/javascript">
+      // draw chart
+      format = d3.time.format("%m/%d/%y").parse;
+    /*
+     * Use D3 to load CSV file and use `draw` callback
+     */
+      d3.csv("http://localhost:8000/data/prosperLoanData_trimmed.csv", function(d) {
+      // d3.csv("http://localhost:8000/data/prosperloandata_sample.csv", function(d) {
+        // d["ListingCreationDate"]= format.parse(d["ListingCreationDate"]);
+        // d["ListingKey"] = d["ListingKey"] 
+        // d["ProsperScore"] = + d["ProsperScore"]
+        // return d;
+
+        return {
+          ListingKey: d.ListingKey,
+          ListingCreationDate: new Date(d.ListingCreationDate),
+          ProsperScore: + d.ProsperScore,
+          LoanStatus: d.LoanStatus,
+          ProsperPrincipalOutstanding: + d.ProsperPrincipalOutstanding,
+          MonthlyLoanPayment: + d.MonthlyLoanPayment
+          // EstimatedReturn: +d.EstimatedReturn
+        };
+
+      }, function(error, data) {
+        console.log(error);
+        draw(data);
+      });
+
+      </script>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+  </section>
+</body>
+
+<!-- Footer -->
+<footer id="footer">
+  <div class="copyright">
+    <p>Brought to you by Leafer &copy; <a href="{{url_for('source')}}" class="icon fa-github text-muted"> Fork on Github</a></p>
+  </div>
+</footer>
+</html>
