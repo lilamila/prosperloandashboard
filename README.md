@@ -14,7 +14,6 @@ Leafer's Interactive Prosper Loan Visualization investigates Prosper's loan data
 
 ### Summary
 
-* [Open the HTML page](index.html).
 Extending the exploratory data analysis in Rstudio of the Prosper loan data, this project creates a visualized dashboard of all the loans to see trends and serve as a tool for lenders. The reader is able to cycle through the years of loan data. Loan circles are sized by principal outstanding amount, mapped by credit rating and estimated return. This could be a useful tool for lenders to know which loans to specifically track, which loans are at risk of late repayments (by looking at the Prosper Rating along the x axis). Users can snapshot see which loans to prioritize communicating or interacting with to ensure that they get paid on schedule.
 
 This visualization could be rolled out and filtered by user, to provide a private dashboard for lenders. 
@@ -22,7 +21,7 @@ This visualization could be rolled out and filtered by user, to provide a privat
 ![Screenshot](https://raw.githubusercontent.com/mleafer/datanano/master/P6_visualize/prosperloandashboard/prosperdashboardscreenshot.png)
 
 
-**Findings**
+**Findings**  
 High risk loans (operationalized by the Prosper Score), seem to have, on average, lower monthly payment amounts, but do not seem to be especially correlated with the days past due. This is important for lenders to be aware that time risk of repayment is not correlated with Prosper Risk overall. 
 
 From the data provided, the greatest amount of past due loans are highest in 2012, and 2013. This would make sense if we assume that severely past due loans in 2011 are either charged off, cancelled, or hopefully repaid at the point in time of the data capture. Loans in 2014 likely haven't matured to be categorized as past due.

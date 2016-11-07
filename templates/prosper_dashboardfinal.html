@@ -1,8 +1,9 @@
 <!-- http://bl.ocks.org/mbostock/4060606 -->
 <!-- view-source:https://bost.ocks.org/mike/loans/ -->
-<!-- TODO: REFACTOR 'cat' TO CATEGORY? -->
+
 <!DOCTYPE html>
 <html lang="en">
+
 <!-- Head -->
 <head>
   <title>Leaf's Visualizations</title>
@@ -23,10 +24,7 @@
 
   <!-- Web Fonts -->
   <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,500,700' rel='stylesheet' type='text/css'>
-
-  <!--   <script src="//d3js.org/d3.v3.min.js"></script> -->
-  <!-- http://stackoverflow.com/questions/21381097/d3-is-not-defined-referenceerror -->
-  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script> 
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script> \
   <script src="https://d3js.org/d3-color.v0.5.min.js"></script>
   <script src="https://d3js.org/d3-interpolate.v0.9.min.js"></script>
   <script src="https://d3js.org/d3-scale-chromatic.v0.3.min.js"></script>
@@ -129,15 +127,18 @@
             .attr("height", height);
 
       // Various accessors that specify data dimensions to visualize.
-      function x(d) { return d.LoanStatus; } 
-      function y(d) { return d.MonthlyLoanPayment; } 
+      function x(d) { return d.LoanStatus; }
+      function y(d) { return d.MonthlyLoanPayment; }
       function radius(d) { return d.ProsperPrincipalOutstanding; }
-      function color(d) { return d.ProsperScore; }  
+      function color(d) { return d.ProsperScore; }
       function key(d) { return d.ListingKey; }
       function year_stripped(d) {return d.ListingCreationDate.getUTCFullYear();}
 
       // Data scales. These domains make assumptions of the data
-      var xScale = d3.scale.ordinal().domain(['', 'Past Due (1-15 days)','Past Due (16-30 days)', 'Past Due (31-60 days)', 'Past Due (61-90 days)', 'Past Due (91-120 days)','FinalPaymentInProgress' ]).rangePoints([0, width]);
+      var xScale = d3.scale.ordinal().domain(['', 'Past Due (1-15 days)',
+        'Past Due (16-30 days)', 'Past Due (31-60 days)',
+        'Past Due (61-90 days)', 'Past Due (91-120 days)',
+        'FinalPaymentInProgress' ]).rangePoints([0, width]);
           yScale = d3.scale.linear().domain([0, 900]).nice().range([height, 0]), // .nice() makes axis end in round number
           radiusScale = d3.scale.sqrt().domain([0, 19000]).range([0, 30]),
           colorScale = d3.scale.ordinal().domain([1,2,3,4,5,6,7,8,9,10,11]).range(["#ff0000", "#FA5858", "#ff8080", "#ffb3b3", "#ffe6e6", "#c4edc4", "#b0e8b0", "#c4edc4", "#9de29d", "#62d062", "#46c846"]);
@@ -146,8 +147,8 @@
 
       formatter = d3.format(".0%");
       // The x & y axes.
-      var xAxis = d3.svg.axis().scale(xScale).orient("bottom"), 
-          yAxis = d3.svg.axis().scale(yScale).orient("left"); 
+      var xAxis = d3.svg.axis().scale(xScale).orient("bottom"),
+          yAxis = d3.svg.axis().scale(yScale).orient("left");
 
       // Create the SVG container and set the origin.
       var svg = d3.select(".chart").append("svg")
@@ -219,7 +220,7 @@
           // Defines a sort order so that the smallest dots are drawn on top.
           function order(a, b) { return radius(b) - radius(a); }
 
-          // to know which years to loop over in animation, store array, and populate. 
+          // to know which years to loop over in animation, store array, and populate.
           var years = [];
 
           for (var i = 2011; i < 2015; i +=1) {
@@ -277,7 +278,7 @@
                                   return d;
                               });
 
-                  // use D3/Jquery interactivity with event binding and 
+                  // use D3/Jquery interactivity with event binding and
                     buttons.on("click", function(d){
                       d3.select(".years_buttons")
                         .selectAll("div") // individual buttons
@@ -300,7 +301,7 @@
 
               }, 500);
 
-            } //end of function plot_loans 
+            } //end of function plot_loans
 
       plot_loans(d);
 
@@ -335,7 +336,7 @@
     <div class = "container">
     <div class ="inner">
     <div class ="row">
-    <div class = "col-md-push-2 col-lg-push-4" id="buttons-container"> 
+    <div class = "col-md-push-2 col-lg-push-4" id="buttons-container">
     <p>Filter year</p>
     </div>
     <div class="col-md-10 col-lg-8" id="scatter-container">
