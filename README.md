@@ -30,7 +30,6 @@ From the data provided, the greatest amount of past due loans are highest in 201
 2011 seems to have a higher volume of smaller past due loans. This may suggest either that following years were 'risk on' years where lenders increased the amount of principle lent, but this thesis would need to take in more context of the data (outside the scope of the purpose of this lender dashoard). This question would be appropriate to explore from the Prosper internal business intelligence point of view, but not necessarily for a user whose goal is to see which loans to focus on collecting. 
 
 
-
 **Tabled iterations/Backlogged Ideas:**
 * Project data onto a hybrid graduated symbol/chloropleth thematic map to showcase relationships between geography, credit rating, loan size, and types of loans.  
 * communicate loan default rates  
@@ -72,11 +71,11 @@ The user is able to filter the loans by year. This enables a higher level tempor
 
 ### Concepts
 
-d3.js
-visual encodings
-design principles, gestalt principles
-effective communication
-author driven vs. reader driven narratives
+d3.js  
+visual encodings  
+design principles, gestalt principles  
+effective communication  
+author driven vs. reader driven narratives  
 
 ### Creator
 
