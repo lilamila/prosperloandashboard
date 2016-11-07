@@ -72,7 +72,6 @@ The user is able to filter the loans by year. This enables a higher level tempor
 
 ### Concepts
 
-dimple.js
 d3.js
 visual encodings
 design principles, gestalt principles
@@ -88,16 +87,11 @@ author driven vs. reader driven narratives
 
 ### Resources
 
-* [CSV/Writer Tutorial](http://goo.gl/HBbvyy)
-* [Data Binding Tutorial](http://alignedleft.com/tutorials/d3/binding-data)
 * [Variable Definitions](https://docs.google.com/spreadsheets/d/1gDyi_L4UvIrLTEC6Wri5nbaMmkGmLQBk-Yx3z0XDEtI/edit#gid=0)
 * [D3 Legends](http://d3-legend.susielu.com)
 * [D3 Filters](http://bl.ocks.org/kobben/8576867)
 * [More D3 Filtering](http://bl.ocks.org/d3noob/8dc93bce7e7200ab487d)
-* [Boostrap Tutorial](https://www.youtube.com/watch?v=gqOEoUR5RHg)
 * [D3 General Update Pattern I](https://bl.ocks.org/mbostock/3808218) [...Pattern II](http://bl.ocks.org/mbostock/3808221) [...Pattern III](http://bl.ocks.org/mbostock/3808234)
-* [D3 Scatterplot Animations](http://bl.ocks.org/WilliamQLiu/bd12f73d0b79d70bfbae)
-* [D3 Scatterplot Examples](http://bl.ocks.org/weiglemc/6185069)
 * [D3 Tips & Tricks](https://leanpub.com/D3-Tips-and-Tricks/read)
 
 
