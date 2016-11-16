@@ -18,7 +18,7 @@ Extending the exploratory data analysis in Rstudio of the Prosper loan data, thi
 
 This visualization could be rolled out and filtered by user, to provide a private dashboard for lenders. 
 
-![Screenshot](https://raw.githubusercontent.com/mleafer/datanano/master/P6_visualize/prosperloandashboard/prosperdashboardscreenshot.png)
+![Screenshot](https://raw.githubusercontent.com/mleafer/prosperloandashboard/master/prosperdashboardscreenshot.png)
 
 
 **Findings**  
